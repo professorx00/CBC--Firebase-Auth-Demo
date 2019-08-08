@@ -57,6 +57,7 @@ btnLogOut.on("click", e => {
 });
 
 forgotPass.on("click", e => {
+  e.preventDefault();
   console.log("forgot Pass")
   userLogin.addClass("hide");
   $("#title").text("Reset Your Password");
