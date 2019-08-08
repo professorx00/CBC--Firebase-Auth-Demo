@@ -10,11 +10,13 @@ var config = {
 // Initialize Firebase
 firebase.initializeApp(config);
 
+const userLogin = $("#loginForm");
 const emailInput = $("#email");
 const passInput = $("#password");
 const btnLogIn = $("#btnSubmit");
 const btnCreate = $("#createNew");
 const btnLogOut = $("#logout");
+const forgotPass = $("#forgotPass");
 const error = $("#error");
 
 btnLogIn.on("click", e => {
@@ -53,6 +55,32 @@ btnLogOut.on("click", e => {
   console.log("Signing Out User")
   firebase.auth().signOut();
 });
+
+forgotPass.on("click", e => {
+  console.log("forgot Pass")
+  userLogin.addClass("hide");
+  $("#title").text("Reset Your Password");
+  $("#passwordRest").removeClass("hide");
+  $("#passSend").on("click", e => {
+    let resetemail = $("#emailPass").val().trim();
+    let resetPromise = firebase.auth().sendPasswordResetEmail(resetemail)
+    resetPromise.catch(e => {
+      console.log(e)
+      console.log(e.code)
+      if (e.code == "auth/user-not-found") {
+        error.text("Please enter valid email address")
+      }
+      else{
+        console.log(e.message)
+      }
+    }).then(()=>{
+        error.text("Please check your email for the reset password email.")
+        error.removeClass("hide")
+        $("#passwordRest").addClass("hide");
+        userLogin.removeClass("hide")
+    });
+  })
+})
 
 firebase.auth().onAuthStateChanged(firebaseUser => {
   if (firebaseUser) {
